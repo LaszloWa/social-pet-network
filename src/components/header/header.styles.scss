@@ -1,0 +1,14 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #5E1096D5;
+    align-items: center;
+
+
+    .var-header-icon {
+        min-height: 35px;
+        max-height: 50px;
+        padding: 10px;
+    }
+}
