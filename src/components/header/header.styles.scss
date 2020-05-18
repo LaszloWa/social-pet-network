@@ -4,11 +4,20 @@
     justify-content: space-between;
     background-color: #5E1096D5;
     align-items: center;
+    height: 60px;
+    color: white;
 
+    .menu-icon {
+        height: 30px;
+        padding: 10px;
+    }
 
     .var-header-icon {
-        min-height: 35px;
-        max-height: 50px;
+        height: 40px;
         padding: 10px;
+    }
+
+    @media only screen and (min-width: 768px) {
+        // to come...
     }
 }
