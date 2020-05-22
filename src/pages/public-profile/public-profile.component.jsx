@@ -2,9 +2,9 @@ import React from 'react';
 
 import ProfilePic from '../../components/profile-pic/profile-pic.component';
 
-import './profile.styles.scss';
+import './public-profile.styles.scss';
 
-const ProfilePage = () => {
+const PublicProfilePage = () => {
    return (
         <div>
             <div className="profile-pic">
@@ -42,4 +42,4 @@ const ProfilePage = () => {
     )
 };
 
-export default ProfilePage;
+export default PublicProfilePage;
