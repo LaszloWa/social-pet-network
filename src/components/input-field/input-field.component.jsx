@@ -1,16 +1,20 @@
 import React from 'react';
 
-const InputField = ({ labelName, type, name, placeholder, value, handleChange }) => (
-    <label>
-        { labelName ? (`${labelName}: `) : "" }
+const InputField = ({ labelName, id, type, min, name, placeholder, value, handleChange }) => (
+    <div>
+        <label htmlFor={id}>
+            { labelName ? (`${labelName}: `) : "" }
+        </label>
         <input
             type={type}
+            min={ min ? min : ""}
+            id={id}
             name={name}
             placeholder={placeholder}
             value={value}
             onChange={handleChange}
         />
-    </label>
+    </div>    
 );
 
 export default InputField;
