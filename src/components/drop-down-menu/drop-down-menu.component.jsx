@@ -1,10 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import './drop-down-menu.styles.scss';
 
-const DropdownMenu = () => {
+const DropdownMenu = ({ handleMenuToggle }) => {
+
     return (
-        <h2>IT WORKS!</h2>
+        <div className="menu-dropdown" >
+            <nav className="menu-nav">
+                <Link className="" to="/signin" onClick={handleMenuToggle} >Sign in</Link>                
+                <Link className="" to="/signup" onClick={handleMenuToggle} >Sign up</Link>
+                <Link className="" to="/profile" onClick={handleMenuToggle} >My profile</Link>
+            </nav>
+        </div>
     )
 };
 

@@ -1,7 +1,7 @@
 .header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    //justify-content: space-between;
     background-color: #5E1096D5;
     align-items: center;
     height: 60px;
@@ -10,11 +10,27 @@
     .menu-icon {
         height: 30px;
         padding: 10px;
+        margin-right: auto;
+    }
+
+    .header-title {
+        justify-self: center;
     }
 
     .var-header-icon {
         height: 40px;
         padding: 10px;
+    }
+
+    .profile-page {
+        margin-left: auto;
+    }
+
+    .sign-in-page {
+        text-decoration: none;
+        color: white;
+        padding: 10px;
+        margin-left: auto;
     }
 
     @media only screen and (min-width: 768px) {

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { auth } from '../../firebase/firebase.utils';
+
 import InputField from '../../components/input-field/input-field.component';
 
 import './sign-up.styles.scss';
@@ -12,13 +14,15 @@ const SignUpPage = () => {
 
     const { displayName, email, password, confirmPassword } = userCredentials;
 
+    console.log(auth, email)
+
     const handleChange = (event) => {
         const { name, value } = event.target;
 
         setUserCredentials({...userCredentials, [name]: value })
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
 
         if (password !== confirmPassword) {
@@ -30,6 +34,15 @@ const SignUpPage = () => {
         }
 
         console.log('Hurray, it works')
+        
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(
+                data => console.log(data, 'hurray it worked')
+            )
+            .catch(
+                err => console.log('the following error has occurred: ', err)
+            )
+
     }
 
     return (

@@ -1,0 +1,20 @@
+.menu-dropdown {
+    position: absolute;
+      width: 160px;
+      height: 340px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      border: 1px solid black;
+      background-color: white;
+      top: 50px;
+      left: 0px;
+      z-index: 5;
+      color: black;
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
