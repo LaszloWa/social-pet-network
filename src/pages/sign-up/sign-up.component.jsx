@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { auth } from '../../firebase/firebase.utils';
+import client from '../../sanity/sanity.utils';
 
 import InputField from '../../components/input-field/input-field.component';
 
@@ -14,7 +15,7 @@ const SignUpPage = () => {
 
     const { displayName, email, password, confirmPassword } = userCredentials;
 
-    console.log(auth, email)
+    console.log(process.env.SANITY_WRITE_TOKEN)
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -34,10 +35,19 @@ const SignUpPage = () => {
         }
 
         console.log('Hurray, it works')
+
+        const user = {
+            _type: 'user',
+            profileName: displayName,
+            userEmail: email,
+        }
         
         auth.createUserWithEmailAndPassword(email, password)
             .then(
-                data => console.log(data, 'hurray it worked')
+                data => {
+                    client.create(user)
+                        .then(res => console.log(`hurray, ${res} was created!`))
+                }
             )
             .catch(
                 err => console.log('the following error has occurred: ', err)
