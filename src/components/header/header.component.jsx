@@ -3,17 +3,23 @@ import { Link } from 'react-router-dom';
 
 import ProfilePic from '../profile-pic/profile-pic.component';
 
-import userContext from '../../contexts/current-user/current-user.context';
+import CurrentUserContext from '../../contexts/current-user/current-user.context';
 
 import './header.styles.scss';
 import DropdownMenu from '../drop-down-menu/drop-down-menu.component';
 import MenuIcon from '../menu-icon/menu-icon.component';
+import { auth } from '../../firebase/firebase.utils';
 
 const Header = () => {
-    const currentUser = useContext(userContext);
+    const currentUser = useContext(CurrentUserContext);
     const [isMenuOpen, setIsMenuOpen] = useState(true);
 
     const onMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+
+    const onSignOut = () => {
+        auth.signOut();
+        onMenuToggle();
+    }
     
     return (
         <div className="header">

@@ -9,13 +9,13 @@ import InputField from '../../components/input-field/input-field.component';
 import './sign-up.styles.scss';
 
 const SignUpPage = () => {
-    const [userCredentials, setUserCredentials] = useState({ displayName: '', email: '', password: '', confirmPassword:'' });
+    const initialUserCredentials = { displayName: '', email: '', password: '', confirmPassword:'' }
+
+    const [userCredentials, setUserCredentials] = useState(initialUserCredentials);
 
     const passwordMinLength = 6; // Sets minimum password length for application
 
     const { displayName, email, password, confirmPassword } = userCredentials;
-
-    console.log(process.env.SANITY_WRITE_TOKEN)
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -40,13 +40,17 @@ const SignUpPage = () => {
             _type: 'user',
             profileName: displayName,
             userEmail: email,
+            userId: '',
         }
         
         auth.createUserWithEmailAndPassword(email, password)
             .then(
                 data => {
+                    console.log(data)
+                    user.userId = data.user.uid;
                     client.create(user)
                         .then(res => console.log(`hurray, ${res} was created!`))
+                        .then(() => setUserCredentials(initialUserCredentials))
                 }
             )
             .catch(
