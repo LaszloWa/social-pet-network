@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import Header from './components/header/header.component';
+import WelcomePage from './pages/welcome/welcome.component';
+import SignInPage from './components/sign-in/sign-in.component';
+import SignUpPage from './components/sign-up/sign-up.component';
+
 import PublicProfilePage from './pages/public-profile/public-profile.component';
 import PrivateProfilePage from './pages/private-profile/private-profile.component';
-import SignInPage from './pages/sign-in/sign-in.component';
-import SignUpPage from './pages/sign-up/sign-up.component';
 
 import { auth } from './firebase/firebase.utils';
 import client from './sanity/sanity.utils';
@@ -23,13 +25,12 @@ function App() {
       if (userAuth) {
         client.fetch(`*[_type == "user" && userId == "${userAuth.uid}"]`)
           .then(res => {
-            setCurrentUser(res);
-            console.log(res)
+            setCurrentUser(res[0]);
           })
-       // console.log(userAuth)
+      } else {
+        setCurrentUser(userAuth);
       }
 
-      setCurrentUser(userAuth);
     })
 
     return () => {
@@ -47,10 +48,18 @@ function App() {
         <Header />
       </CurrentUserContext.Provider>
       <Switch>
-        <Route path="/profile" component={PrivateProfilePage} />
-        <Route path={`/profile:${currentUser}`} component={PublicProfilePage} /> //TODO: update currentUser variable to point to displayName
-        <Route path="/signin" component={SignInPage} />
-        <Route path="/signup" component={SignUpPage} />
+        <Route exact path="/" 
+          render={() => currentUser ? <h1>Newsfeed to come</h1> : <WelcomePage />} 
+        />
+        {
+          //TODO: Implement newsfeed component
+        }
+        <Route exact path="/profile" render={() => currentUser ? <PrivateProfilePage currentUser={currentUser} /> : <SignInPage /> } />
+        <Route path={`/profile:${currentUser}`} component={PublicProfilePage} /> 
+        {//TODO: update currentUser variable to point to displayName
+        }
+        <Route path="/signin" render={() => currentUser ? <Redirect to="/" /> : <SignInPage />} />
+        <Route path="/signup" render={() => currentUser ? <Redirect to="/" /> : <SignUpPage />} />
       </Switch>
     </div>
   );

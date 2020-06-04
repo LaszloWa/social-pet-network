@@ -27,7 +27,7 @@ const Header = () => {
             {
                 isMenuOpen ?
                     null :
-                    <DropdownMenu handleMenuToggle={onMenuToggle} />
+                    <DropdownMenu handleMenuToggle={onMenuToggle} handleSignOut={onSignOut} />
             }
             <h1 className="header-title">TITLE</h1>
             {

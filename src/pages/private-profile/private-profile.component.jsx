@@ -3,19 +3,23 @@ import React, { useState } from 'react';
 import ProfilePic from '../../components/profile-pic/profile-pic.component';
 import InputField from '../../components/input-field/input-field.component';
 
+import client from '../../sanity/sanity.utils';
+
 import './private-profile.styles.scss';
 
-const PrivateProfilePage = () => {
-    const [userProfile, setUserProfile] = useState({profileName: '', userAge: '', userGender: '', userBreed: '', userHobbies: '', userNicknames: ''});
+const PrivateProfilePage = ({ currentUser }) => {
+    const [userProfile, setUserProfile] = useState(currentUser)
 
-    const { profileName, profileBio, userAge, userGender, userBreed, userHobbies, userNicknames } = userProfile;
+    // const [userProfile, setUserProfile] = useState({profileName: '', profileAge: '', profileGender: '', profileBreed: '', profileHobbies: '', profileNicknames: '', profileBio: ''});
+
+    const { userName, userAge, userGender, userBreed, userHobbies, userNicknames, userBio, _id } = userProfile;
 
     const handleChange = (event) => {
         const {name, value } = event.target
 
 
 
-        setUserProfile({ ...userProfile, [name]: value })
+        setUserProfile({...userProfile, [name]: value})
 
         console.log(userProfile)
     };
@@ -26,6 +30,13 @@ const PrivateProfilePage = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        client
+            .patch(`${_id}`)
+            .set(userProfile)
+            .commit()
+            .then(res => console.log('The new doc looks like: ' + res))
+            .catch(err => console.log('You messed up' + err))
     };
 
    return (
@@ -39,22 +50,21 @@ const PrivateProfilePage = () => {
                         labelName="Name"
                         type="text"
                         id="name"
-                        name="profileName"
+                        name="userName"
                         placeholder="Name"
-                        value={profileName} 
+                        value={userName} 
                         handleChange={handleChange} 
                     />
                     <div>
-                        <label htmlFor="profileBio" >Bio: </label>
+                        <label htmlFor="userBio" >Bio: </label>
                         <textarea       
                             className="profile-description"
                             placeholder="Pet bio"
-                            name="profileBio"
-                            id="profileBio"
+                            name="userBio"
+                            id="userBio"
+                            value={userBio}
                             onChange={handleChange}
-                        >
-                            { profileBio ? profileBio : null}
-                        </textarea>
+                        />
                     </div>
                 </div>
                 <div className="about-me-section">

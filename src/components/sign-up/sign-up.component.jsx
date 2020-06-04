@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { auth } from '../../firebase/firebase.utils';
 import client from '../../sanity/sanity.utils';
 
-import InputField from '../../components/input-field/input-field.component';
+import InputField from '../input-field/input-field.component';
 
 import './sign-up.styles.scss';
 
@@ -34,11 +34,9 @@ const SignUpPage = () => {
             return;
         }
 
-        console.log('Hurray, it works')
-
         const user = {
             _type: 'user',
-            profileName: displayName,
+            userName: displayName,
             userEmail: email,
             userId: '',
         }
@@ -46,10 +44,8 @@ const SignUpPage = () => {
         auth.createUserWithEmailAndPassword(email, password)
             .then(
                 data => {
-                    console.log(data)
                     user.userId = data.user.uid;
                     client.create(user)
-                        .then(res => console.log(`hurray, ${res} was created!`))
                         .then(() => setUserCredentials(initialUserCredentials))
                 }
             )

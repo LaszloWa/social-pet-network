@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import InputField from '../../components/input-field/input-field.component';
+import InputField from '../input-field/input-field.component';
+import { auth } from '../../firebase/firebase.utils';
 
 import './sign-in.styles.scss';
 
@@ -19,6 +20,9 @@ const SignInPage = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
+        auth.signInWithEmailAndPassword(email, password)
+            .then(res => console.log('Sign in successful.'))
+            .catch(err => console.log('The following error occurred during signin: ' + err))
 
     }
 
