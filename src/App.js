@@ -10,7 +10,7 @@ import PublicProfilePage from './pages/public-profile/public-profile.component';
 import PrivateProfilePage from './pages/private-profile/private-profile.component';
 
 import { auth } from './firebase/firebase.utils';
-import client from './sanity/sanity.utils';
+import { readClient } from './sanity/sanity.utils';
 
 import CurrentUserContext from './contexts/current-user/current-user.context';
 
@@ -20,10 +20,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null)
 
   useEffect(() => {
-    client.fetch('*[_type == "user"]').then(res => console.log(res))
-    let unsubscribe = auth.onAuthStateChanged(async userAuth => {
+    readClient.fetch('*[_type == "user"]').then(res => console.log(res))
+    const unsubscribe = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
-        client.fetch(`*[_type == "user" && userId == "${userAuth.uid}"]`)
+        readClient.fetch(`*[_type == "user" && userId == "${userAuth.uid}"]`)
           .then(res => {
             setCurrentUser(res[0]);
           })
@@ -54,7 +54,7 @@ function App() {
         {
           //TODO: Implement newsfeed component
         }
-        <Route exact path="/profile" render={() => currentUser ? <PrivateProfilePage currentUser={currentUser} /> : <SignInPage /> } />
+        <Route exact path="/profile" render={() => currentUser ? <PrivateProfilePage currentUser={currentUser} handleUserUpdate={setCurrentUser} /> : <SignInPage /> } />
         <Route path={`/profile:${currentUser}`} component={PublicProfilePage} /> 
         {//TODO: update currentUser variable to point to displayName
         }

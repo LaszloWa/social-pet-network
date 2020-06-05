@@ -1,9 +1,12 @@
 import sanityClient from '@sanity/client';
 
-const client = sanityClient({
+export const writeClient = sanityClient({
     projectId: 't8r70fo7',
     dataset: 'production',
     token: process.env.REACT_APP_SANITY_WRITE_TOKEN,
 });
 
-export default client;
+export const readClient = sanityClient({
+    projectId: 't8r70fo7',
+    dataset: 'production',
+});

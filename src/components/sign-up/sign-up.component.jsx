@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { auth } from '../../firebase/firebase.utils';
-import client from '../../sanity/sanity.utils';
+import { writeClient } from '../../sanity/sanity.utils';
 
 import InputField from '../input-field/input-field.component';
 
@@ -45,7 +45,7 @@ const SignUpPage = () => {
             .then(
                 data => {
                     user.userId = data.user.uid;
-                    client.create(user)
+                    writeClient.create(user)
                         .then(() => setUserCredentials(initialUserCredentials))
                 }
             )

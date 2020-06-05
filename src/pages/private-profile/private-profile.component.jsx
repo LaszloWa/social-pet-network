@@ -3,14 +3,12 @@ import React, { useState } from 'react';
 import ProfilePic from '../../components/profile-pic/profile-pic.component';
 import InputField from '../../components/input-field/input-field.component';
 
-import client from '../../sanity/sanity.utils';
+import { writeClient } from '../../sanity/sanity.utils';
 
 import './private-profile.styles.scss';
 
-const PrivateProfilePage = ({ currentUser }) => {
+const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
     const [userProfile, setUserProfile] = useState(currentUser)
-
-    // const [userProfile, setUserProfile] = useState({profileName: '', profileAge: '', profileGender: '', profileBreed: '', profileHobbies: '', profileNicknames: '', profileBio: ''});
 
     const { userName, userAge, userGender, userBreed, userHobbies, userNicknames, userBio, _id } = userProfile;
 
@@ -31,11 +29,11 @@ const PrivateProfilePage = ({ currentUser }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        client
+        writeClient
             .patch(`${_id}`)
             .set(userProfile)
             .commit()
-            .then(res => console.log('The new doc looks like: ' + res))
+            .then(res => handleUserUpdate(userProfile))
             .catch(err => console.log('You messed up' + err))
     };
 
