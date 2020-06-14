@@ -8,9 +8,11 @@ import { writeClient } from '../../sanity/sanity.utils';
 import './private-profile.styles.scss';
 
 const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
-    const [userProfile, setUserProfile] = useState(currentUser)
+    const [userProfile, setUserProfile] = useState(currentUser);
 
-    const { userName, userAge, userGender, userBreed, userHobbies, userNicknames, userBio, _id } = userProfile;
+    const [imageUploadLink, setImageUploadLink] = useState('');
+
+    const { userName, userAge, userGender, userBreed, userHobbies, userNicknames, userBio, _id, userPic } = userProfile;
 
     const handleChange = (event) => {
         const {name, value } = event.target
@@ -18,9 +20,58 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
 
 
         setUserProfile({...userProfile, [name]: value})
-
-        console.log(userProfile)
     };
+
+    const onPhotoChange = (event) => {
+        setImageUploadLink(event.target.files[0])
+    };
+
+    const handlePhotoUpload = (event) => {
+        event.preventDefault();
+
+        writeClient.assets
+            .upload('image', imageUploadLink, {filename: imageUploadLink.name
+            })
+            .then(imageAsset => {
+                writeClient
+                    .patch(`${_id}`)
+                    .unset(['userPic'])
+                    .commit()
+                    .then(
+                        writeClient
+                            .patch(`${_id}`)
+                            .set({
+                                userPic: {
+                                    "_type": "image",
+                                    "asset": {
+                                    "_type": "reference",
+                                    "_ref": `${imageAsset._id}`
+                                    },
+                                }
+                            })
+                            .commit()
+                            .then(res => {
+                                if (userPic && userPic.asset) {
+                                    writeClient
+                                        .delete(`${userPic.asset._ref}`)
+                                }
+                            }
+                            )
+                            .then(setUserProfile({...userProfile, userPic: {
+                                "_type": "image",
+                                "asset": {
+                                "_type": "reference",
+                                "_ref": `${imageAsset._id}`
+                                },
+                                "caption": "This is the caption",
+                            }}))
+                            .then(handleUserUpdate(userProfile))
+                    )
+                    .catch(err => console.log('You messed up' + err))
+            })
+
+        
+        };
 
     const handleDiscard = (event) => {
         // TODO: reset state to state fetched from DB
@@ -39,9 +90,21 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
 
    return (
         <div>
-            <div className="profile-pic">
-                <ProfilePic height={200} width={200} />
-            </div>
+            <form className="profile-photo" onSubmit={handlePhotoUpload}>
+                <div className="profile-pic">
+                    <ProfilePic height={200} width={200} profilePicture={userPic} />
+                    <InputField
+                        labelName="ProfilePic"
+                        type="file"
+                        id="userPic"
+                        name="userPic" 
+                        accept=".jpg, .jpeg, .png"
+                        multiple={false}
+                        onChange={onPhotoChange}
+                    />
+                </div>
+                <button type="submit" >Upload Image</button>
+            </form>
             <form className="profile-form" onSubmit={handleSubmit}>
                 <div className="profile-header">
                     <InputField

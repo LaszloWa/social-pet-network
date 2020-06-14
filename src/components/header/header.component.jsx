@@ -33,7 +33,7 @@ const Header = () => {
             {
                 currentUser ?
                     <Link className="profile-page" to="/profile" >
-                        <ProfilePic />
+                        <ProfilePic profilePicture={currentUser.userPic} />
                     </ Link>
                     :
                     <Link className="sign-in-page" to="/signin" >

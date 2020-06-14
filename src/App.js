@@ -7,7 +7,7 @@ import SignInPage from './components/sign-in/sign-in.component';
 import SignUpPage from './components/sign-up/sign-up.component';
 
 import PublicProfilePage from './pages/public-profile/public-profile.component';
-import PrivateProfilePage from './pages/private-profile/private-profile.component';
+import PrivateProfilePage from './pages/private-profile/private-profile.component'; 
 
 import { auth } from './firebase/firebase.utils';
 import { readClient } from './sanity/sanity.utils';
@@ -17,20 +17,21 @@ import CurrentUserContext from './contexts/current-user/current-user.context';
 import './App.css';
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     readClient.fetch('*[_type == "user"]').then(res => console.log(res))
     const unsubscribe = auth.onAuthStateChanged(async userAuth => {
-      if (userAuth) {
-        readClient.fetch(`*[_type == "user" && userId == "${userAuth.uid}"]`)
-          .then(res => {
-            setCurrentUser(res[0]);
-          })
+      if(userAuth) {
+        readClient.fetch(`*[_type == "user" && _id == "${userAuth.uid}"]`)
+        .then(res => {
+          setCurrentUser(res[0]);
+          console.log('Sanity data fetched')
+        })
       } else {
-        setCurrentUser(userAuth);
+        setCurrentUser(null)
       }
-
+      
     })
 
     return () => {

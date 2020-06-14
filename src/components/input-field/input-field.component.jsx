@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InputField = ({ labelName, id, type, min, name, placeholder, value, handleChange }) => (
+const InputField = ({ labelName, id, type, min, name, placeholder, value, handleChange, ...otherProps }) => (
     <div>
         <label htmlFor={id}>
             { labelName ? (`${labelName}: `) : "" }
@@ -13,6 +13,7 @@ const InputField = ({ labelName, id, type, min, name, placeholder, value, handle
             placeholder={placeholder}
             value={value}
             onChange={handleChange}
+            {...otherProps}
         />
     </div>    
 );

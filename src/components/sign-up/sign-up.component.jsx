@@ -38,13 +38,15 @@ const SignUpPage = () => {
             _type: 'user',
             userName: displayName,
             userEmail: email,
+            _id: '',
             userId: '',
         }
         
         auth.createUserWithEmailAndPassword(email, password)
             .then(
                 data => {
-                    user.userId = data.user.uid;
+                    user._id = data.user.uid;
+                    user.userId = user._id;
                     writeClient.create(user)
                         .then(() => setUserCredentials(initialUserCredentials))
                 }
