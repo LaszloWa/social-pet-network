@@ -55,12 +55,12 @@ function App() {
         {
           //TODO: Implement newsfeed component
         }
-        <Route exact path="/profile" render={() => currentUser ? <PrivateProfilePage currentUser={currentUser} handleUserUpdate={setCurrentUser} /> : <SignInPage /> } />
+        <Route exact path="/profile" render={() => currentUser ? <PrivateProfilePage currentUserProfile={currentUser} handleUserUpdate={setCurrentUser} /> : <SignInPage /> } />
         <Route path={`/profile:${currentUser}`} component={PublicProfilePage} /> 
         {//TODO: update currentUser variable to point to displayName
         }
         <Route path="/signin" render={() => currentUser ? <Redirect to="/" /> : <SignInPage />} />
-        <Route path="/signup" render={() => currentUser ? <Redirect to="/" /> : <SignUpPage />} />
+        <Route path="/signup" render={() => currentUser ? <Redirect to="/" /> : <SignUpPage handleUserUpdate={setCurrentUser} />} />
       </Switch>
     </div>
   );

@@ -8,7 +8,7 @@ import InputField from '../input-field/input-field.component';
 
 import './sign-up.styles.scss';
 
-const SignUpPage = () => {
+const SignUpPage = ({ handleUserUpdate }) => {
     const initialUserCredentials = { displayName: '', email: '', password: '', confirmPassword:'' }
 
     const [userCredentials, setUserCredentials] = useState(initialUserCredentials);
@@ -40,17 +40,33 @@ const SignUpPage = () => {
             userEmail: email,
             _id: '',
             userId: '',
+            userAge: '', 
+            userGender: '', 
+            userBreed: '', 
+            userHobbies: '', 
+            userNicknames: '', 
+            userBio: '',
         }
-        
+
         auth.createUserWithEmailAndPassword(email, password)
             .then(
                 data => {
                     user._id = data.user.uid;
                     user.userId = user._id;
                     writeClient.create(user)
-                        .then(() => setUserCredentials(initialUserCredentials))
+                        .then(res => {
+                            handleUserUpdate(res);
+                            console.log(res)
+                        })
+                        //TODO: implement function that signs in user straight after signup
+                        // .then(res => {
+                        //     readClient.fetch(`*[_type == "user" && _id == "${data.user.id}"]`)
+                        //         .then(res => console.log(res))
+                        //         .then(console.log('sign up fetched sanity data'))
+                        // })                                
                 }
             )
+            .then(() => setUserCredentials(initialUserCredentials))
             .catch(
                 err => console.log('the following error has occurred: ', err)
             )
@@ -99,7 +115,7 @@ const SignUpPage = () => {
                         handleChange={handleChange} 
                     />
                 </div>
-                <button type="submit" className="form-submit">Sign In</button>
+                <button type="submit" className="form-submit">Sign Up</button>
             </form>
             <div className="">
                 <p>

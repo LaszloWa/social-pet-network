@@ -57,3 +57,17 @@
         }
     }
 }
+
+.danger-zone {
+    width: 300px;
+    margin: 2rem auto;
+    border: 1px dashed red;
+
+    .danger-zone-header {
+        color: red;
+    }
+
+    .delete-profile-btn {
+        margin-bottom: 1rem;
+    }
+}

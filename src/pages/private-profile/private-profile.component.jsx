@@ -4,11 +4,12 @@ import ProfilePic from '../../components/profile-pic/profile-pic.component';
 import InputField from '../../components/input-field/input-field.component';
 
 import { writeClient } from '../../sanity/sanity.utils';
+import { auth } from '../../firebase/firebase.utils';
 
 import './private-profile.styles.scss';
 
-const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
-    const [userProfile, setUserProfile] = useState(currentUser);
+const PrivateProfilePage = ({ currentUserProfile, handleUserUpdate }) => {
+    const [userProfile, setUserProfile] = useState(currentUserProfile);
 
     const [imageUploadLink, setImageUploadLink] = useState('');
 
@@ -16,8 +17,6 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
 
     const handleChange = (event) => {
         const {name, value } = event.target
-
-
 
         setUserProfile({...userProfile, [name]: value})
     };
@@ -37,6 +36,13 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
                     .patch(`${_id}`)
                     .unset(['userPic'])
                     .commit()
+                    .then(res => {
+                        if (userPic && userPic.asset) {
+                            writeClient
+                                .delete(`${userPic.asset._ref}`)
+                        }
+                    }
+                    )
                     .then(
                         writeClient
                             .patch(`${_id}`)
@@ -50,13 +56,6 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
                                 }
                             })
                             .commit()
-                            .then(res => {
-                                if (userPic && userPic.asset) {
-                                    writeClient
-                                        .delete(`${userPic.asset._ref}`)
-                                }
-                            }
-                            )
                             .then(setUserProfile({...userProfile, userPic: {
                                 "_type": "image",
                                 "asset": {
@@ -74,7 +73,7 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
         };
 
     const handleDiscard = (event) => {
-        // TODO: reset state to state fetched from DB
+        setUserProfile(currentUserProfile);
     }
 
     const handleSubmit = (event) => {
@@ -86,6 +85,36 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
             .commit()
             .then(res => handleUserUpdate(userProfile))
             .catch(err => console.log('You messed up' + err))
+    };
+
+    const handleDeleteProfile = (event) => {
+        const deleteProfilePrompt = prompt('If you really want to delete this account, please enter YES below');
+
+        if (deleteProfilePrompt === 'YES') {
+            writeClient
+                .patch(`${_id}`)
+                .unset(['userPic'])
+                .commit()
+                .then(res => {
+                    if (userPic && userPic.asset) {
+                        writeClient
+                            .delete(`${userPic.asset._ref}`)
+                    }
+                    writeClient.delete(`${_id}`);
+                    console.log('deleted asset and user from sanity')
+                })
+                .then(res => {
+                    console.log('deleting user from firebase')
+                    auth.currentUser.delete()
+                    .then(res => console.log('firebase user deleted'))
+                    .catch(err => console.log(`Error handling firebase user deletion: ${err}`))
+                })
+                .then(res => handleUserUpdate(null))
+                .then(res => alert(`User Profile for ${userName} successfully deleted`))
+                .catch(err => console.log(`Sorry, something went wrong: ${err}`))
+        } else {
+            alert(`Sorry, but to delete your profile you must enter 'YES', not '${deleteProfilePrompt}'`);
+        }
     };
 
    return (
@@ -178,14 +207,13 @@ const PrivateProfilePage = ({ currentUser, handleUserUpdate }) => {
                     />
                 </div>
                 <div className="form-buttons">
-                    <button type="submit" >Save changes</button>
+                    <button type="submit" >Save changes</button> 
                     <button type="button" onClick={handleDiscard} >Discard changes</button>
                 </div>
             </form>
-            <div className="recent-posts">
-                {
-                //TODO: add wall post component
-                }
+            <div className="danger-zone">
+                <h2 className="danger-zone-header">DANGER ZONE</h2>
+                <button type="button" className="delete-profile-btn" onClick={handleDeleteProfile}>Delete account</button>
             </div>
         </div>
     )
