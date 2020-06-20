@@ -28,46 +28,47 @@ const PrivateProfilePage = ({ currentUserProfile, handleUserUpdate }) => {
     const handlePhotoUpload = (event) => {
         event.preventDefault();
 
-        writeClient.assets
-            .upload('image', imageUploadLink, {filename: imageUploadLink.name
-            })
-            .then(imageAsset => {
-                writeClient
-                    .patch(`${_id}`)
-                    .unset(['userPic'])
-                    .commit()
-                    .then(res => {
-                        if (userPic && userPic.asset) {
-                            writeClient
-                                .delete(`${userPic.asset._ref}`)
+        if(imageUploadLink) {
+            writeClient.assets
+                .upload('image', imageUploadLink, {filename: imageUploadLink.name
+                })
+                .then(imageAsset => {
+                    writeClient
+                        .patch(`${_id}`)
+                        .unset(['userPic'])
+                        .commit()
+                        .then(res => {
+                            if (userPic && userPic.asset) {
+                                writeClient
+                                    .delete(`${userPic.asset._ref}`)
+                            }
                         }
-                    }
-                    )
-                    .then(
-                        writeClient
-                            .patch(`${_id}`)
-                            .set({
-                                userPic: {
-                                    "_type": "image",
-                                    "asset": {
-                                    "_type": "reference",
-                                    "_ref": `${imageAsset._id}`
-                                    },
-                                }
-                            })
-                            .commit()
-                            .then(setUserProfile({...userProfile, userPic: {
-                                "_type": "image",
-                                "asset": {
-                                "_type": "reference",
-                                "_ref": `${imageAsset._id}`
-                                },
-                                "caption": "This is the caption",
-                            }}))
-                            .then(handleUserUpdate(userProfile))
-                    )
-                    .catch(err => console.log('You messed up' + err))
-            })
+                        )
+                        .then(
+                            writeClient
+                                .patch(`${_id}`)
+                                .set({
+                                    userPic: {
+                                        "_type": "image",
+                                        "asset": {
+                                        "_type": "reference",
+                                        "_ref": `${imageAsset._id}`
+                                        },
+                                    }
+                                })
+                                .commit()
+                            .then(res => handleUserUpdate(res))
+                        )
+                        .then(setUserProfile({...userProfile, userPic: {
+                            "_type": "image",
+                            "asset": {
+                            "_type": "reference",
+                            "_ref": `${imageAsset._id}`
+                            },
+                        }}))
+                        .catch(err => console.log('You messed up' + err))
+                })
+        }
 
         
         };
@@ -101,10 +102,8 @@ const PrivateProfilePage = ({ currentUserProfile, handleUserUpdate }) => {
                             .delete(`${userPic.asset._ref}`)
                     }
                     writeClient.delete(`${_id}`);
-                    console.log('deleted asset and user from sanity')
                 })
                 .then(res => {
-                    console.log('deleting user from firebase')
                     auth.currentUser.delete()
                     .then(res => console.log('firebase user deleted'))
                     .catch(err => console.log(`Error handling firebase user deletion: ${err}`))

@@ -12,8 +12,6 @@ import PrivateProfilePage from './pages/private-profile/private-profile.componen
 import { auth } from './firebase/firebase.utils';
 import { readClient } from './sanity/sanity.utils';
 
-import CurrentUserContext from './contexts/current-user/current-user.context';
-
 import './App.css';
 
 function App() {
@@ -45,9 +43,7 @@ function App() {
 
   return (
     <div className="App">
-      <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-      </CurrentUserContext.Provider>
+      <Header currentUserProfile={currentUser} />
       <Switch>
         <Route exact path="/" 
           render={() => currentUser ? <h1>Newsfeed to come</h1> : <WelcomePage />} 

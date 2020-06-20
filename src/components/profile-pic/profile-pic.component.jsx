@@ -7,7 +7,6 @@ import './profile-pic.styling.scss';
 
 const ProfilePic = ({profilePicture, height, width}) => {
     
-    
     return (
         <img src={ profilePicture ? builder.image(profilePicture).width(width).height(height).url() : defaultProfilePic } alt="Profile" className="var-header-icon" />
     )

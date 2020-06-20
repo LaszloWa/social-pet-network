@@ -57,13 +57,7 @@ const SignUpPage = ({ handleUserUpdate }) => {
                         .then(res => {
                             handleUserUpdate(res);
                             console.log(res)
-                        })
-                        //TODO: implement function that signs in user straight after signup
-                        // .then(res => {
-                        //     readClient.fetch(`*[_type == "user" && _id == "${data.user.id}"]`)
-                        //         .then(res => console.log(res))
-                        //         .then(console.log('sign up fetched sanity data'))
-                        // })                                
+                        })                              
                 }
             )
             .then(() => setUserCredentials(initialUserCredentials))

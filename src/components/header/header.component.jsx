@@ -1,17 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import ProfilePic from '../profile-pic/profile-pic.component';
-
-import CurrentUserContext from '../../contexts/current-user/current-user.context';
 
 import './header.styles.scss';
 import DropdownMenu from '../drop-down-menu/drop-down-menu.component';
 import MenuIcon from '../menu-icon/menu-icon.component';
 import { auth } from '../../firebase/firebase.utils';
 
-const Header = () => {
-    const currentUser = useContext(CurrentUserContext);
+const Header = ({ currentUserProfile }) => {
+    const currentUser = currentUserProfile;
     const [isMenuOpen, setIsMenuOpen] = useState(true);
 
     const onMenuToggle = () => setIsMenuOpen(!isMenuOpen);
